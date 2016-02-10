@@ -86,7 +86,7 @@ src-test/t-mod-loadable2-src.c:t-mod-loadable2.o.mod.img
 	cd src-$(@:%.subc=%) && $(MAKE) clean
 
 copyright:
-	bin/m-copyright.sh .
+	$(PREFIX)/bin/m-copyright.sh .
 
 fmt:
 	bin/m-fmt.sh .

@@ -2,9 +2,9 @@
 /*-                                                                           */
 /*-            Copyright (c) of hyperCOS.                                     */
 /*-                                                                           */
-/*-  This software is copyrighted by and is the sole property of its authors. */
+/*-  This software is copyrighted by and is the sole property of socware.net. */
 /*-  All rights, title, ownership, or other interests in the software remain  */
-/*-  the property of the authors. The source code is for FREE short-term      */
+/*-  the property of socware.net. The source code is FREE for short-term      */
 /*-  evaluation, educational or non-commercial research only. Any commercial  */
 /*-  application may only be used in accordance with the corresponding license*/
 /*-  agreement. Any unauthorized use, duplication, transmission, distribution,*/
@@ -13,12 +13,12 @@
 /*-  Knowledge of the source code may NOT be used to develop a similar product*/
 /*-                                                                           */
 /*-  This Copyright notice may not be removed or modified without prior       */
-/*-  written consent of the authors.                                          */
+/*-  written consent of socware.net.                                          */
 /*-                                                                           */
-/*-  The authors reserves the right to modify this software                   */
+/*-  socware.net reserves the right to modify this software                   */
 /*-  without notice.                                                          */
 /*-                                                                           */
-/*-  To email the authors:                                                    */
+/*-  To contact socware.net:                                                  */
 /*-                                                                           */
 /*-             socware.help@gmail.com                                        */
 /*-                                                                           */
