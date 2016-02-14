@@ -102,7 +102,7 @@ hello: all
 	cd src-hello && \
 	$(MAKE) clean && \
 	$(MAKE) CONFIG=-DTEST=0 && \
-	$(MAKE) run QM="main.elf.pack" QF="-serial stdio -serial null"
+	$(MAKE) sim QM="main.elf" QF="-serial stdio -serial null"
 
 gdbs: all
 	cd src-hello && \
