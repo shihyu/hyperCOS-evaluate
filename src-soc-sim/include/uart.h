@@ -23,27 +23,40 @@
 /*-             socware.help@gmail.com                                        */
 /*-                                                                           */
 /*-****************************************************************************/
-#define mut_val 0
-#define mut_own 4
-#define mut_own_pri 16
-#define sem_val 0
-#define task_pri 58
-#define task_context 32
-#define task_stack 8
-#define task_stack_sz 12
-#define reg_irq_sz 28
-#define reg_irq_pc 20
-#define reg_irq_cpsr 24
-#define reg_sz 64
-#define reg_r0 0
-#define reg_r1 4
-#define reg_r2 8
-#define reg_r3 12
-#define reg_r4 16
-#define reg_r11 44
-#define reg_r12 48
-#define reg_lr 52
-#define reg_pc 56
-#define reg_cpsr 60
-#define reg_fiq_pc 16
-#define reg_fiq_cpsr 20
+#ifndef UART0721
+#define UART0721
+
+#include <hcos/io.h>
+
+#define UART_THR(_b)           ((_b)+0x0)
+#define UART_DLL(_b)           ((_b)+0x0)
+#define UART_DLH(_b)           ((_b)+0x4)
+#define UART_IER(_b)           ((_b)+0x4)
+#define UART_FCR(_b)           ((_b)+0x8)
+#define UART_LCR(_b)           ((_b)+0xc)
+#define UART_LSR(_b)           ((_b)+0x14)
+
+#define UART_LSR_THRE     	    0x0020
+
+typedef struct {
+	unsigned base, irq;
+} uart_t;
+
+void uart_init(uart_t * o, unsigned base, unsigned irq);
+
+void uart_baud(uart_t * o, unsigned clk, unsigned baud);
+
+void uart_put(uart_t * o, char c);
+
+int uart_get(uart_t * o);
+
+static inline int uart_w(uart_t * o, const char *buf, int n)
+{
+	while (n--) {
+		char c = *buf++;
+		uart_put(o, c);
+	}
+	return 0;
+}
+
+#endif

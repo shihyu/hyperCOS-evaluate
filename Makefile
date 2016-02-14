@@ -31,8 +31,9 @@ ALL    :=include/cpu \
 	_cpu \
 	_lib \
 	_header \
-	install
-CLEAN  :=_clean
+	install \
+	soc-sim.sub
+CLEAN  :=soc-sim.subc _clean
 
 VPATH  :=src src-test src/cpu-$(CPU) 
 VOBJ   :=$(patsubst %.S,%.o, \
