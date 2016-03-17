@@ -86,22 +86,17 @@ int mq_put(mq_t * m, unsigned *msg, wait_t w)
 	return 0;
 }
 
-int mq_get(mq_t * m, unsigned *msg, wait_t w)
+static int mq_fetch(mq_t * m, unsigned *msg, wait_t w)
 {
-	unsigned *s;
-	unsigned iflag;
-
+	unsigned * s;
 	if (!m->n && !w)
 		return -1;
-	iflag = irq_lock();
 	if (!m->n) {
 		if (task_suspend(&m->waitg, w)) {
-			irq_restore(iflag);
 			return -1;
 		}
 	}
 	_assert(m->n > 0);
-
 	s = (void *)m->h;
 	switch (m->isz >> 2) {
 	case 4:
@@ -116,11 +111,29 @@ int mq_get(mq_t * m, unsigned *msg, wait_t w)
 	default:
 		memcpy(msg, m->h, m->isz);
 	}
+	return 0;
+}
 
+int mq_peek(mq_t * m, unsigned *msg, wait_t w)
+{
+	int r;
+	unsigned iflag;
+	iflag = irq_lock();
+	r = mq_fetch(m, msg, w);
+	irq_restore(iflag);
+	return r;
+}
+
+int mq_get(mq_t * m, unsigned *msg, wait_t w)
+{
+	int r;
+	unsigned iflag;
+	iflag = irq_lock();
+	r = mq_fetch(m, msg, w);
 	m->h += m->isz;
 	if (m->h >= m->b + m->bsz)
 		m->h = m->b;
 	m->n--;
 	_task_wakeq(&m->waitp, iflag);
-	return 0;
+	return r;
 }

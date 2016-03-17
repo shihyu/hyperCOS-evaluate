@@ -46,6 +46,8 @@ mq_t *mq_init(mq_t * m, int no_words, unsigned *buf, int buf_sz);
 /// \return 0 on success
 int mq_get(mq_t * m, unsigned *msg, wait_t w);
 
+int mq_peek(mq_t * m, unsigned *msg, wait_t w);
+
 /// \note support irq context
 /// \return 0 on success
 int mq_put(mq_t * m, unsigned *msg, wait_t w);
