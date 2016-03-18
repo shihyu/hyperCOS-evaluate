@@ -29,6 +29,13 @@
 #include "cpu/asm.h"
 	.asm_syn
 
+#if CFG_FIX_VECT
+	.align 7
+	.section ".vectors","ax"
+	.global __isr_vector
+__isr_vector:
+	.space ((16+CFG_FIX_VECT)*4)
+#endif
 	.bss
 	.align 4
 	.global _stack_end

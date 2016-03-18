@@ -52,8 +52,8 @@
 #endif
 
 /// support OS utilization statistics
-#ifndef CFG_HFLOAT
-#define CFG_HFLOAT	0
+#ifndef CFG_FIX_VECT
+#define CFG_FIX_VECT	128
 #endif
 
 /// max irq number

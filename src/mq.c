@@ -88,7 +88,7 @@ int mq_put(mq_t * m, unsigned *msg, wait_t w)
 
 static int mq_fetch(mq_t * m, unsigned *msg, wait_t w)
 {
-	unsigned * s;
+	unsigned *s;
 	if (!m->n && !w)
 		return -1;
 	if (!m->n) {

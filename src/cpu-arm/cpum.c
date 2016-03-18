@@ -51,10 +51,17 @@ static inline void *stack_top(task_t * t)
 
 void cpu_init()
 {
+	void **_vects;
+#if CFG_FIX_VECT
+	extern void *__isr_vector[];
+	int n = CFG_FIX_VECT;
+	int sz = (E_INT + n) * sizeof(void *);
+	_vects = __isr_vector;
+#else
 	int n = nvic_irqn();
 	int sz = (E_INT + n) * sizeof(void *);
-	void **_vects = (void **)core_alloc(sz, 7);
-
+	_vects = (void **)core_alloc(sz, 7);
+#endif
 	// 128-bytes aligned
 	memset(_vects, sz, 0);
 	_vects[0] = _stack;
