@@ -51,14 +51,20 @@ static int task_wait_timeout(void *p)
 	return 0;
 }
 
-static void task_dest()
+void _task_dest(task_t *t)
 {
 	unsigned iflag;
-	task_t *tc = _task_cur;
-	tc->status = TASK_DEST;
 	iflag = irq_lock();
-	ll_addt(&core_gc_task, &tc->ll);
+	if(t->status == TASK_READY)
+		sch_del(t);
+	t->status = TASK_DEST;
+	ll_addt(&core_gc_task, &t->ll);
 	irq_restore(iflag);
+}
+
+static void task_dest()
+{
+	_task_dest(_task_cur);
 	task_yield();
 }
 

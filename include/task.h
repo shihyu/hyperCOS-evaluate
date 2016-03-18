@@ -74,6 +74,8 @@ task_t *task_init(task_t * t,
 #define task_new(_n,_e,_p,_sz,_sl,_pr) \
 	task_init(_alloc(sizeof(task_t)), _n, _e, _p, _alloc(_sz), _sz, _sl, _pr)
 
+void _task_dest();
+
 extern task_t *_task_cur, *_task_pending;
 
 /// requirecritical section protection
