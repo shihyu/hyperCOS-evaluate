@@ -49,11 +49,14 @@ static inline void *stack_top(task_t * t)
 	return (((char *)t->stack) + t->stack_sz);
 }
 
+#if CFG_FIX_VECT
+void*  __isr_vector[16+CFG_FIX_VECT]__attribute__ ((aligned (128))) ;
+#endif
+
 void cpu_init()
 {
 	void **_vects;
 #if CFG_FIX_VECT
-	extern void *__isr_vector[];
 	int n = CFG_FIX_VECT;
 	int sz = (E_INT + n) * sizeof(void *);
 	_vects = __isr_vector;
