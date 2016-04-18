@@ -29,6 +29,7 @@
 
 #include "cfg.h"
 #include "reg.h"
+#include "../dbg.h"
 #include "../io.h"
 
 static inline void cpu_idle()
@@ -53,6 +54,7 @@ static inline void cpu_stick_en(unsigned on)
 static inline void cpu_req_switch()
 {
 	reg(ICSR) |= (1 << 28);
+	asm_mb();
 }
 
 static inline unsigned cpu_fpu_sta()
@@ -81,10 +83,16 @@ typedef enum {
 	E_INT = 16,
 } cpu_exc_t;
 
+extern unsigned cpu_pbits;
+
+#define cpu_pri_max()		((1<<cpu_pbits)-1)
+
+#define cpu_pri_reg(exc)	regb(SHPR + (exc-4))
+
 static inline void cpu_pri(cpu_exc_t exc, unsigned pri)
 {
-	void *b = (void *)(SHPR + (exc - 0x4));
-	writeb(pri << 4, b);
+	_assert(pri <= cpu_pri_max());
+	cpu_pri_reg(exc) = pri << (8 - cpu_pbits);
 }
 
 void cpu_init(void);

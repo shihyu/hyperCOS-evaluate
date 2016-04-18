@@ -44,6 +44,8 @@ static task_t *cpu_fctx;
 
 int fctx_corrupted;
 
+unsigned cpu_pbits;
+
 static inline void *stack_top(task_t * t)
 {
 	return (((char *)t->stack) + t->stack_sz);
@@ -93,8 +95,10 @@ void cpu_init()
 		      "mov sp, r1\n" "mrs r2, PSP\n"::"r" (_vects[0])
 		      :"r1", "r2");
 	cpu_fpu_on();
-	cpu_pri(E_SVC, 0xf);
-	cpu_pri(E_PENDSV, 0xf);
+	cpu_pri_reg(E_SVC) = 0xff;
+	cpu_pbits = 9 - __builtin_ffs(cpu_pri_reg(E_SVC));
+	cpu_pri(E_SVC, cpu_pri_max());
+	cpu_pri(E_PENDSV, cpu_pri_max());
 }
 
 void *cpu_cur_pc(unsigned line)

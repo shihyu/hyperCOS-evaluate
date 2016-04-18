@@ -28,8 +28,6 @@
 
 #include "../io.h"
 
-#define NVIC_PRI_BITS          4
-
 enum {
 	ICTR = 0xE000E004,
 	ISER = 0xE000E100,
@@ -56,15 +54,10 @@ static inline void nvic_irq_unmask(unsigned irq)
 	reg(ISER + (irq >> 5) * 4) = (1 << (irq & 0x1f));
 }
 
-static inline void nvic_eoi(unsigned irq)
-{
-	reg(ICPR + (irq >> 5) * 4) = (1 << (irq & 0x1f));
-}
-
 static inline void nvic_set_pri(unsigned irq, unsigned pri)
 {
 	void *b = (void *)(IPR + (irq));
-	writeb((pri << 4) & 0xff, b);
+	writeb((pri << cpu_pbits) & 0xff, b);
 }
 
 static inline void nvic_sgi(int id)
