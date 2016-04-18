@@ -34,6 +34,8 @@
 
 extern void __abt(void);
 
+extern void _hfault(void);
+
 extern void _svc(void);
 
 extern void _task_pendsv(void);
@@ -52,7 +54,7 @@ static inline void *stack_top(task_t * t)
 }
 
 #if CFG_FIX_VECT
-void*  __isr_vector[16+CFG_FIX_VECT]__attribute__ ((aligned (128))) ;
+void *__isr_vector[16 + CFG_FIX_VECT] __attribute__ ((aligned(128)));
 #endif
 
 void cpu_init()
@@ -71,7 +73,7 @@ void cpu_init()
 	memset(_vects, sz, 0);
 	_vects[0] = _stack;
 	_vects[E_NMI] = __abt;
-	_vects[E_HARD] = __abt;
+	_vects[E_HARD] = _hfault;
 	_vects[E_MEM] = __abt;
 	_vects[E_BUS] = __abt;
 	_vects[E_SVC] = _svc;
@@ -122,7 +124,7 @@ reg_t *_cpu_task_init(task_t * t, void *priv, void *dest)
 ///< get float context soft frame
 static inline reg_f_t *_fctx_sf(task_t * t)
 {
-	return (reg_f_t *) (stack_top(t) - sizeof(reg_f_t));
+	return (reg_f_t *) (stack_top(t) - sizeof(reg_f_t) - sizeof(unsigned));
 }
 
 ///< get float context soft frame
@@ -173,6 +175,7 @@ int cpu_tf(reg_irq_t * ctx)
 	}
 
 	if (ipsr) {
+		//turn off FPU after ISR
 		cpu_req_switch();
 		return 1;
 	}

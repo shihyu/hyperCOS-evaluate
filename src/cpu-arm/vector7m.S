@@ -46,8 +46,8 @@ _svc:
 	beq	__task_load
 	// fall through to __abt
 
-	.asm_fun __abt
-__abt:
+	.asm_fun _hfault
+_hfault:
 	tst 	lr, #4
 	ite	eq
 	mrseq	r0, MSP
@@ -62,4 +62,12 @@ __abt:
 	bl	_abt
 1:
 	b	1b
-	bx	lr
+	.asm_fun __abt
+__abt:
+	tst 	lr, #4
+	ite	eq
+	mrseq	r0, MSP
+	mrsne	r0, PSP
+	bl	_abt
+1:
+	b	1b
