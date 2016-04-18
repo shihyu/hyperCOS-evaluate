@@ -126,14 +126,16 @@ int mq_peek(mq_t * m, unsigned *msg, wait_t w)
 
 int mq_get(mq_t * m, unsigned *msg, wait_t w)
 {
-	int r;
 	unsigned iflag;
 	iflag = irq_lock();
-	r = mq_fetch(m, msg, w);
+	if (mq_fetch(m, msg, w)) {
+		irq_restore(iflag);
+		return -1;
+	}
 	m->h += m->isz;
 	if (m->h >= m->b + m->bsz)
 		m->h = m->b;
 	m->n--;
 	_task_wakeq(&m->waitp, iflag);
-	return r;
+	return 0;
 }
