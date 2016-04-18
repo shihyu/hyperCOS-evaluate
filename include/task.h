@@ -85,9 +85,24 @@ int task_suspend(ll_t * wq, wait_t w);
 /// \param w sleep ticks
 void task_sleep(wait_t w);
 
+void _task_pri(task_t * t, short pri);
+
+/// \param t task
+/// \param pri priority
+void task_pri(task_t * t, short pri);
+
 /// \param hint notify the scheduler to bypass thread with
 /// priority higher than hint
 void sch_schedule(unsigned hint);
+
+static inline void task_pri_self(short pri)
+{
+	task_t *t = _task_cur;
+	short opri = t->pri;
+	t->pri = pri;
+	if (pri > opri)
+		sch_schedule(opri);
+}
 
 /// \param yield the control to threads with the same priority
 static inline void task_yield()

@@ -53,11 +53,7 @@ int mut_lock_wait(mut_t * u, wait_t w)
 		goto done;
 
 	if (own->pri > tc->pri) {
-		own->pri = tc->pri;
-		if (own->status == TASK_READY) {
-			lle_del(&own->ll);
-			sch_wake(own);
-		}
+		_task_pri(own, tc->pri);
 	}
 
 	if (task_suspend(&u->wait, w)) {

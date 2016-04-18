@@ -147,6 +147,27 @@ void task_sleep(wait_t w)
 	irq_restore(iflag);
 }
 
+void _task_pri(task_t * t, short pri)
+{
+	t->pri = pri;
+	if (t->status == TASK_READY) {
+		lle_del(&t->ll);
+		sch_wake(t);
+	}
+}
+
+void task_pri(task_t * t, short pri)
+{
+	unsigned iflag;
+
+	irq_dep_chk(irq_depth == 0);
+	_assert(t != _task_cur);
+
+	iflag = irq_lock();
+	_task_pri(t, pri);
+	irq_restore(iflag);
+}
+
 reg_t **_task_switch_status(task_t * _tnext)
 {
 	task_t *_task_ori = _task_cur;
