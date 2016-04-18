@@ -99,4 +99,8 @@ static inline unsigned _readb(void *a)
 
 #define reg(_a)	*((volatile unsigned*)(_a))
 
+#define regb(_a)	*((volatile unsigned char*)(_a))
+
+#define regh(_a)	*((volatile unsigned short*)(_a))
+
 #endif
