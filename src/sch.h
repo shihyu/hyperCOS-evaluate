@@ -29,14 +29,15 @@
 
 void sch_schedule(unsigned hint);
 
-/// critical section protection required
+/// wake up thread, possible trigger an immediate context switch if t's
+/// priority is higher than current
 void sch_wake(task_t * t);
 
 void sch_add(task_t * t);
 
 void sch_del(task_t * t);
 
-void sch_ts_tick(void);
+void sch_tick(void);
 
 void sch_init(void);
 

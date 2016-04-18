@@ -77,14 +77,17 @@ void tmr_on(tmr_t * t, unsigned expire)
 
 irq_handler(_tmr_tickf)
 {
-	unsigned cur;
+	unsigned cur, iflag;
 	irq_dep_chk(irq_depth > 0);
+
+	// time slicing
+	iflag = irq_lock();
+	sch_tick();
+	irq_restore(iflag);
+
 #if !CFG_IRQ_VECTS
 	irq_eoi(irq);
 #endif
-	// time slicing
-	sch_ts_tick();
-
 	// general timer
 	tmr_ticks++;
 

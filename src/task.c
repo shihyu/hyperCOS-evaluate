@@ -34,7 +34,7 @@
 
 reg_t *_cpu_task_init(struct task *t, void *priv, void *dest);
 
-task_t *_task_cur, *_task_pending;
+task_t *_task_cur, *_task_pend;
 
 void (*task_gc) (task_t * t);
 
@@ -51,11 +51,11 @@ static int task_wait_timeout(void *p)
 	return 0;
 }
 
-void _task_dest(task_t *t)
+void _task_dest(task_t * t)
 {
 	unsigned iflag;
 	iflag = irq_lock();
-	if(t->status == TASK_READY)
+	if (t->status == TASK_READY)
 		sch_del(t);
 	t->status = TASK_DEST;
 	ll_addt(&core_gc_task, &t->ll);
@@ -83,6 +83,7 @@ task_t *task_init(task_t * t,
 	t->stack_sz = stack_sz;
 	t->slice = slice;
 	t->slice_cur = slice;
+	iflag = irq_lock();
 	tmr_init(&t->to, t, task_wait_timeout);
 
 	_assert(pri != 0);
@@ -91,7 +92,6 @@ task_t *task_init(task_t * t,
 	r = _cpu_task_init(t, priv, task_dest);
 	t->context = r;
 	lle_init(&t->ll);
-	iflag = irq_lock();
 	t->status = TASK_READY;
 	sch_add(t);
 #ifdef CFG_STACK_CHK
@@ -133,6 +133,20 @@ int task_suspend(ll_t * wq, wait_t w)
 	return f;
 }
 
+int _task_wakeq(ll_t * wq, unsigned iflag)
+{
+	if (!ll_empty(wq)) {
+		task_t *t = lle_get(ll_head(wq), task_t, ll);
+		lle_del(&t->ll);
+		sch_wake(t);
+		irq_restore(iflag);
+		return 0;
+	} else {
+		irq_restore(iflag);
+		return 1;
+	}
+}
+
 void task_sleep(wait_t w)
 {
 	task_t *tc = _task_cur;
@@ -168,13 +182,22 @@ void task_pri(task_t * t, short pri)
 	irq_restore(iflag);
 }
 
-reg_t **_task_switch_status(task_t * _tnext)
+reg_t **_task_switch_status(task_t * tn)
 {
-	task_t *_task_ori = _task_cur;
+	task_t *t = _task_cur;
 	if (_task_cur->status == TASK_READY)
 		sch_add(_task_cur);
-	sch_del(_tnext);
-	_task_cur = _tnext;
+	sch_del(tn);
+	_task_cur = tn;
 	_task_cur->slice_cur = _task_cur->slice;
-	return &_task_ori->context;
+	return &t->context;
+}
+
+void _task_switch_pend(task_t * tn)
+{
+	irq_dep_chk(irq_depth > 0);
+	if (!_task_pend || _task_pend->pri >= tn->pri) {
+		_task_pend = tn;
+		cpu_req_switch();
+	}
 }

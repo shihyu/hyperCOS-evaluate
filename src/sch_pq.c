@@ -160,7 +160,7 @@ void sch_del(task_t * t)
 #error "no scheduler config"
 #endif
 
-void sch_ts_tick(void)
+void sch_tick(void)
 {
 	task_t *tn, *tc;
 
@@ -171,20 +171,17 @@ void sch_ts_tick(void)
 	if (tc->slice_cur == 0 && !ll_empty(&task_ready[tc->pri])) {
 
 		tn = lle_get(ll_head(&task_ready[tc->pri]), task_t, ll);
-		//ll_addt(&task_ready[tc->pri], &tc->ll);
-		sch_add(tc);
-		_task_switch_pending(tn);
+		_task_switch_pend(tn);
 	}
 }
 
 void sch_wake(task_t * t)
 {
 	t->status = TASK_READY;
-	//ll_addt(&task_ready[t->pri], &t->ll);
 	sch_add(t);
 	if (t->pri < _task_cur->pri) {
 		if (irq_act())
-			_task_switch_pending(t);
+			_task_switch_pend(t);
 		else
 			_task_switch(t->context, _task_switch_status(t));
 	}

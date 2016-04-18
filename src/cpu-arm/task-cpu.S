@@ -81,7 +81,6 @@ _task_switch:
 	orr	r2, r2, r3, lsl #5
 	str     lr, [sp,# reg_pc]  // pc
 	str     r2, [sp,# reg_cpsr]// cpsr
-	.asm_fun _stack_check
 _stack_check:
 #if CFG_STACK_CHK
 	ldr     r2, [r1, #(task_stack- task_context)]

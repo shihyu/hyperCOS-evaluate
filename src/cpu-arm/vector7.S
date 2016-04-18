@@ -148,7 +148,7 @@ __irq:
 	str     r2, [r3]
 	bne     1f
 
-	ldr     r3, = _task_pending
+	ldr     r3, = _task_pend
 	ldr     r0, [r3]
 	cmp     r0, #0
 	beq     1f

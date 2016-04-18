@@ -76,7 +76,7 @@ task_t *task_init(task_t * t,
 
 void _task_dest();
 
-extern task_t *_task_cur, *_task_pending;
+extern task_t *_task_cur, *_task_pend;
 
 /// requirecritical section protection
 /// \return -1 on timeout
@@ -110,23 +110,7 @@ static inline void task_yield()
 	sch_schedule(_task_cur->pri);
 }
 
-/// wake up thread, possible trigger an immediate context switch if t's
-/// priority is higher than current
-void sch_wake(task_t * t);
-
-static inline int _task_wakeq(ll_t * wq, unsigned iflag)
-{
-	if (!ll_empty(wq)) {
-		task_t *t = lle_get(ll_head(wq), task_t, ll);
-		lle_del(&t->ll);
-		sch_wake(t);
-		irq_restore(iflag);
-		return 0;
-	} else {
-		irq_restore(iflag);
-		return 1;
-	}
-}
+int _task_wakeq(ll_t * wq, unsigned iflag);
 
 static inline void task_wakeq(ll_t * wq)
 {
@@ -136,18 +120,12 @@ static inline void task_wakeq(ll_t * wq)
 
 void _task_load(reg_t * reg_next);
 
-void _task_switch(reg_t * reg_next, reg_t ** reg_ori);
+void _task_switch(reg_t * reg_next, reg_t ** reg_cur);
 
-static inline void _task_switch_pending(task_t * tn)
-{
-	irq_dep_chk(irq_depth > 0);
-	if (!_task_pending || _task_pending->pri > tn->pri)
-		_task_pending = tn;
-	cpu_req_switch();
-}
+void _task_switch_pend(task_t * tn);
 
-/// \return _task_ori
-reg_t **_task_switch_status(task_t * _tnext);
+/// \return pointer to original context
+reg_t **_task_switch_status(task_t * tn);
 
 extern void (*task_ov) (task_t * t);
 

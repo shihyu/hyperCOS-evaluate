@@ -63,7 +63,7 @@ _task_pendsv:
 	bic.w	r2, 0xf00000
 	str	r2, [r3]
 1:
-	ldr     r3, = _task_pending
+	ldr     r3, = _task_pend
 	ldr     r0, [r3]
 	cmp	r0, #0
 	it	eq
@@ -102,7 +102,6 @@ __task_switch:
 	//movt	r2, #0xE000
 	//str   r3, [r2]
 //1:
-	.asm_fun _stack_check
 _stack_check:
 #if CFG_STACK_CHK
 	ldr     r2, [r1, #(task_stack- task_context)]
