@@ -129,4 +129,6 @@ reg_t **_task_switch_status(task_t * tn);
 
 extern void (*task_ov) (task_t * t);
 
+#include "cpu/_task.h"
+
 #endif

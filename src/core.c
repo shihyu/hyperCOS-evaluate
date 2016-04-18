@@ -97,7 +97,7 @@ void core_start()
 {
 	lle_del(&core_task_idle.ll);
 	_task_cur = &core_task_idle;
-	_task_load(core_task_idle.context);
+	task_load(&core_task_idle);
 }
 
 #if CFG_OSUTIL

@@ -28,6 +28,7 @@
 #define CPU150822
 
 #include "cfg.h"
+#include "reg.h"
 
 static inline void cpu_idle()
 {

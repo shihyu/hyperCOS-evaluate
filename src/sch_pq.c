@@ -59,8 +59,7 @@ void sch_schedule(unsigned hint)
 			if ((_task_cur->status != TASK_READY) ||
 			    (tn->pri < _task_cur->pri)) {
 
-				_task_switch(tn->context,
-					     _task_switch_status(tn));
+				_task_switch_sync(tn, _task_switch_status(tn));
 			}
 
 			irq_restore(iflag);
@@ -119,7 +118,7 @@ void sch_schedule(unsigned hint)
 		if ((_task_cur->status != TASK_READY) ||
 		    (tn->pri < _task_cur->pri)) {
 
-			_task_switch(tn->context, _task_switch_status(tn));
+			_task_switch_sync(tn, _task_switch_status(tn));
 		}
 		irq_restore(iflag);
 		return;
@@ -183,7 +182,7 @@ void sch_wake(task_t * t)
 		if (irq_act())
 			_task_switch_pend(t);
 		else
-			_task_switch(t->context, _task_switch_status(t));
+			_task_switch_sync(t, _task_switch_status(t));
 	}
 }
 

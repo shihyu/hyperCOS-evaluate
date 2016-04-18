@@ -23,7 +23,9 @@
 /*-             socware.help@gmail.com                                        */
 /*-                                                                           */
 /*-****************************************************************************/
-
+#include "cfg.h"
+#define _DBG	DBG_CPUM
+#include "dbg.h"
 #include "task.h"
 #include "io.h"
 #include "cpu-armm/asm.h"
@@ -35,8 +37,6 @@
 extern void __abt(void);
 
 extern void _hfault(void);
-
-extern void _svc(void);
 
 extern void _task_pendsv(void);
 
@@ -76,7 +76,7 @@ void cpu_init()
 	_vects[E_HARD] = _hfault;
 	_vects[E_MEM] = __abt;
 	_vects[E_BUS] = __abt;
-	_vects[E_SVC] = _svc;
+	_vects[E_SVC] = __abt;
 	_vects[E_PENDSV] = _task_pendsv;
 
 	irqs = (irq_t *) (&_vects[E_INT]);
@@ -146,6 +146,8 @@ int cpu_tf(reg_irq_t * ctx)
 	ipsr = ctx->cpsr & 0x1ff;
 
 	cpu_fpu_on();
+	dbg("FF:%s %s %x %d\r\n", _task_cur->name,
+	    cpu_fctx ? cpu_fctx->name : "", ipsr, fctx_corrupted);
 	if (!ipsr && cpu_fctx == _task_cur) {
 		if (fctx_corrupted) {
 			fhard = _fctx_hf(_task_cur);

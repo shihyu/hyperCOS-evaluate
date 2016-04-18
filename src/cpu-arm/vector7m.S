@@ -37,15 +37,6 @@ _stack_end:
 	.global _stack
 _stack:
 
-	.text
-	.asm_fun _svc
-_svc:
-	cmp	r3, 0x1
-	beq	__task_switch
-	cmp	r3, 0x2
-	beq	__task_load
-	// fall through to __abt
-
 	.asm_fun _hfault
 _hfault:
 	tst 	lr, #4
