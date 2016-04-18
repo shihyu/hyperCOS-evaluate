@@ -82,13 +82,13 @@
 
 /// stack size for timer thread
 #ifndef CFG_TMR_STACK
-#define CFG_TMR_STACK	1024
+#define CFG_TMR_STACK	2048
 #endif
 
 /// stack size for idle thread,
 /// @note the garbage collection may requires more idle stack size.
 #ifndef CFG_IDLE_STACK
-#define CFG_IDLE_STACK	256
+#define CFG_IDLE_STACK	512
 #endif
 
 #ifndef CFG_DBM_STACK
@@ -202,6 +202,30 @@
 
 #ifndef CFG_MAXBP
 #define CFG_MAXBP       8
+#endif
+
+#ifndef DBG_ELF_CPU
+#define	 DBG_ELF_CPU	0
+#endif
+
+#ifndef DBG_MOD
+#define DBG_MOD		0
+#endif
+
+#ifndef DBG_DBM
+#define DBG_DBM		0
+#endif
+
+#ifndef DBG_TASK
+#define DBG_TASK	0
+#endif
+
+#ifndef DBG_DBM_ARM
+#define DBG_DBM_ARM	0
+#endif
+
+#ifndef DBG_CPUM
+#define DBG_CPUM	0
 #endif
 
 #endif
