@@ -1,4 +1,14 @@
+### This repository provide a strip version, request a complete version [HERE](http://socware.net/?page_id=300)
+
+### Subscribe the mailing list [HERE](http://www.freelists.org/list/hypercos)
+
 #hyperC OS#
+
+## what is Markdown?
+## This repository provide a strip version, request a complete version 
+http://socware.net/?page_id=300
+
+http://www.freelists.org/list/hypercos
 
 The hyperC OS is a real time-operating system (RTOS) designed for various IoT applications.
 
