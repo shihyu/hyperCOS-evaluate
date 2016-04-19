@@ -37,6 +37,7 @@ _stack_end:
 	.global _stack
 _stack:
 
+	.text
 	.asm_fun _hfault
 _hfault:
 	tst 	lr, #4
