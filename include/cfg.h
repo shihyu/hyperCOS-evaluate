@@ -153,6 +153,11 @@
 #define CFG_AARCH	7
 #endif
 
+/// use hardfloat
+#ifndef CFG_HFLOAT
+#define CFG_HFLOAT 1
+#endif
+
 /// use ARM architecture version
 #ifndef CFG_CACHE_VMSA
 #define CFG_CACHE_VMSA 1

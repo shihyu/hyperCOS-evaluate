@@ -43,7 +43,11 @@
 	.macro	.asm_syn
 		.syntax unified
 		.arch armv7-m
+#if CFG_HFLOAT
 		.fpu vfp
+#else
+		.fpu softvfp
+#endif
 		.thumb
 	.endm
 

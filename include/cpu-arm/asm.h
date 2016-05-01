@@ -33,7 +33,7 @@
 
 #include "../cfg.h"
 
-#if CFG_ASM_STUB && defined(__thumb__)
+#if CFG_ASM_STUB
 	#define asm_beg(_tmp)	"adr " #_tmp ",1f\n"	\
 				"bx  " #_tmp "\n"	\
 				".code 32\n"		\
@@ -56,7 +56,11 @@
 	.macro	.asm_syn
 		.syntax unified
 		.arch armv7-a
+#if CFG_HFLOAT
+		.fpu vfp
+#else
 		.fpu softvfp
+#endif
 		.thumb
 	.endm
 
