@@ -95,13 +95,13 @@ fmt:
 utest: all
 	cd src-hello && \
 	$(MAKE) clean && \
-	$(MAKE) CONFIG=-DTEST=1 && \
-	$(MAKE) run QM="main.elf.pack" QF="-serial stdio -serial null"
+	$(MAKE) CONFIG= && \
+	$(MAKE) run QM="test.elf.pack" QF="-serial stdio -serial null"
 
 hello: all
 	cd src-hello && \
 	$(MAKE) clean && \
-	$(MAKE) CONFIG=-DTEST=0 && \
+	$(MAKE) CONFIG= && \
 	$(MAKE) sim QM="main.elf" QF="-serial stdio -serial null"
 
 gdbs: all

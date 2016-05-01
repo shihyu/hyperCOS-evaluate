@@ -24,16 +24,22 @@
 /*-                                                                           */
 /*-****************************************************************************/
 #include <hcos/core.h>
-#include <hcos/test.h>
 #include <hcos/task.h>
 #include <hcos/soc.h>
 #include <hcos/mod.h>
 #include <string.h>
 #include <stdio.h>
 
-void _abt(void *ctx);
+#if ARM_HYPER
+#include <hcos/cpu/hyper.h>
+unsigned ns_ints[] = {
+	0xffffffff
+};
+#endif
 
-void hellof(void *priv)
+#if _EXE_
+
+static void hellof(void *priv)
 {
 	unsigned ts = (unsigned)priv;
 	unsigned i = 0, b = soc_rtcs();
@@ -45,28 +51,13 @@ void hellof(void *priv)
 	}
 }
 
-void gc(task_t * t)
-{
-}
-
-#if ARM_HYPER
-#include <hcos/cpu/hyper.h>
-unsigned ns_ints[] = {
-	0xffffffff
-};
-#endif
-
 int main(void)
 {
 	core_init();
-#if TEST
-	task_gc = gc;
-	core_test();
-#else
 	core_ut_init();
 	task_new("hello-1", hellof, 56, 1024, -1, (void *)50);
 	task_new("hello-2", hellof, 10, 1024, -1, (void *)100);
-#endif
 	core_start();
 	return 0;
 }
+#endif
