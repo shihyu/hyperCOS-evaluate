@@ -82,7 +82,7 @@ DEP :=$(COBJ:%.o=%.d)
 	$(OBJCOPY) -O binary $^ $@
 
 %.elf.sym:%.elf.img
-	$(NM) $^ | sed -e '/ [tbdaV] /d'  -e 's/.*[WBTDRA] //g' >$@
+	$(NM) $^ | sed -e '/ [wtbdaV] /d'  -e 's/.*[WBTDRA] //g' >$@
 	
 %.elf.sym.src:%.elf.sym
 	$(PREFIX)/bin/m-gen-msym-src.sh $^ > $@
@@ -93,7 +93,7 @@ DEP :=$(COBJ:%.o=%.d)
 	@rm ${^:%.src=%.c}
 
 %.elf.pack:%.o $(LIB) %.elf.sym.o
-	$(CC) -o $@ $(notdir $(<:%.c=%.e.o)) $(notdir $(<:%.o=%.elf.sym.o)) $(LDFLAGS)
+	$(CC) -o $@ $(notdir $(<:%.o=%.e.o)) $(notdir $(<:%.o=%.elf.sym.o)) $(LDFLAGS)
 	
 %.x:%.c $(LIB)
 	$(CC) $(CFLAGS) $(INCLUDE) -D _UNIT_ -o $(notdir $(<:%.c=%.x.o)) -c $<

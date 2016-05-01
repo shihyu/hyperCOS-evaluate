@@ -25,8 +25,8 @@
 /*-****************************************************************************/
 
 #include "asm-off.h"
-#include "cpu-arm/asm.h"
-#include "cpu-arm/_irq.h"
+#include "cpu/asm.h"
+#include "cpu/_irq.h"
 
 	.asm_syn
 	.text

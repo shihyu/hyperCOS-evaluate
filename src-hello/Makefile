@@ -10,7 +10,7 @@ AARCH  :=$(shell echo $(COPTS) | sed -e 's/.*armv\([0-9]\).*/\1/g')
 MOPTS  :=$(COPTS) \
 	-DCFG_AARCH=$(AARCH) \
 	-fno-builtin -fno-common \
-	-ffunction-sections -fdata-sections
+	-ffunction-sections -fdata-sections -fshort-enums
 CONFIG ?=-DTEST=0
 ASFLAGS:=$(MOPTS) $(CONFIG) -O2 -g -Wall -Werror -D __ASSEMBLY__
 CFLAGS :=$(MOPTS) $(CONFIG) -O2 -g -Wall -Werror

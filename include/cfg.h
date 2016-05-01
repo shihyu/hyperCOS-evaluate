@@ -178,7 +178,11 @@
 
 #define CFG_TZ		(CFG_AARCH>=6)
 
-#define CFG_ASM_STUB	(CFG_AARCH<6 && defined __thumb__)
+#if CFG_AARCH<6 && defined(__thumb__)
+#define CFG_ASM_STUB	1
+#else
+#define CFG_ASM_STUB	0
+#endif
 
 #define CFG_ASM_UNIFY	(CFG_AARCH>=6)
 
