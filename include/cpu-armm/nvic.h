@@ -27,6 +27,7 @@
 #define NVIC1229
 
 #include "../io.h"
+#include "_cpu.h"
 
 enum {
 	ICTR = 0xE000E004,

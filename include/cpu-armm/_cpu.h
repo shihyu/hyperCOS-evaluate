@@ -29,13 +29,13 @@
 
 #include "cfg.h"
 #include "reg.h"
+#include "asm.h"
 #include "../dbg.h"
 #include "../io.h"
 
 static inline void cpu_idle()
 {
-	asm volatile ("" asm_beg(r0) "wfi\n" asm_end(r0)
-		      :::"r0");
+	asm volatile ("wfi":::"r0");
 }
 
 static inline void cpu_stick_init(unsigned ticks)
@@ -96,5 +96,11 @@ static inline void cpu_pri(cpu_exc_t exc, unsigned pri)
 }
 
 void cpu_init(void);
+
+static inline void cpu_abt()
+{
+	asm volatile ("svc 0");
+	asm volatile ("mov r1, r1");
+}
 
 #endif

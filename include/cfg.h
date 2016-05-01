@@ -56,6 +56,11 @@
 #define CFG_FIX_VECT	128
 #endif
 
+/// required aligned bits for exception vector
+#ifndef CFG_VECT_ALIGN
+#define CFG_VECT_ALIGN	10
+#endif
+
 /// max irq number
 #ifndef CFG_IRQ_MAX
 #define CFG_IRQ_MAX	64

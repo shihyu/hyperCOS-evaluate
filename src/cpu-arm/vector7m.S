@@ -29,14 +29,6 @@
 #include "cpu/asm.h"
 	.asm_syn
 
-	.bss
-	.align 4
-	.global _stack_end
-_stack_end:
-	.space CFG_STACK_IRQ
-	.global _stack
-_stack:
-
 	.text
 	.asm_fun _hfault
 _hfault:
@@ -51,7 +43,7 @@ _hfault:
 	it	ne
 	// return iff it's a lazy float trap
 	bxne	lr
-	bl	_abt
+
 1:
 	b	1b
 	.asm_fun __abt
@@ -60,6 +52,16 @@ __abt:
 	ite	eq
 	mrseq	r0, MSP
 	mrsne	r0, PSP
-	bl	_abt
-1:
-	b	1b
+
+	push	{lr}
+	ldr     lr, =core_abt
+	ldr     lr, [lr]
+	blx     lr
+	pop	{lr}
+	bx	lr
+
+	.data
+	.align 2
+	.global core_abt
+core_abt:
+	.word   _abt

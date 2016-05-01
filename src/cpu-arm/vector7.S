@@ -176,14 +176,11 @@ __abt:
 	stmdb	sp!, {lr}
 	stmdb	sp!, {r0-r12}
 	mov     r0, sp
-	ldr     lr, core_abt
+	ldr     lr, =core_abt
+	ldr	lr, [lr]
 	blx     lr
 	mov     r0, sp
 	b       _task_load
-
-	.global core_abt
-core_abt:
-	.word   _abt
 
 	.global __pabt
 __pabt:
@@ -229,3 +226,7 @@ __pabt:
 	.global _dbm_sp
 _dbm_sp:
 #endif
+	.data
+	.global core_abt
+core_abt:
+	.word   _abt

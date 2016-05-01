@@ -67,8 +67,7 @@ typedef struct reg {
 
 static inline void reg_skip(reg_t * context, int off)
 {
-	//FIXME
-	//context->pc += 2;
+	context->pc += 2;
 }
 
 #endif

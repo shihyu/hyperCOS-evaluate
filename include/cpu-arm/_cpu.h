@@ -65,4 +65,9 @@ void cpu_set_stack(unsigned mode, void *stack);
 
 #define cpu_req_switch()
 
+static inline void cpu_abt()
+{
+	*((volatile unsigned *)0xffffffff) = 1;
+}
+
 #endif
