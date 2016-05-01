@@ -117,7 +117,7 @@ unsigned soc_rtcs()
 	return readl(BASE_RTC + 0x4);
 }
 
-void tmr_tickless_soc(int next_expire)
+void tmr_tickless_soc(unsigned next_expire)
 {
 	if (!tmr_off)
 		writel(next_expire << 2, (void *)BASE_RTC + 0x0);

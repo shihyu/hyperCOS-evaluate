@@ -41,8 +41,10 @@ void irq_cfg(unsigned irq, int is_level);
 /// \return irq number or IRQ_NA
 irq_sta_t irq_ack(void);
 
+#ifndef irq_eoi
 /// end of interrupt
 void irq_eoi(unsigned irq);
+#endif
 
 /// trigger software interrupt
 void irq_sgi(unsigned irq);
@@ -62,7 +64,8 @@ unsigned core_ut_init_soc();
 unsigned soc_rtcs();
 
 /// \param next_expire left ticks to the next timer event
-void tmr_tickless_soc(int next_expire);
+/// \note the implementation may set wake up time less than <next_expire>
+void tmr_tickless_soc(unsigned next_expire);
 
 void tmr_enable(int on);
 

@@ -75,7 +75,7 @@ void tmr_on(tmr_t * t, unsigned expire)
 	irq_restore(iflag);
 }
 
-irq_handler(_tmr_tickf)
+static void __tmr_tickf(void)
 {
 	unsigned cur, iflag;
 	irq_dep_chk(irq_depth > 0);
@@ -85,9 +85,6 @@ irq_handler(_tmr_tickf)
 	sch_tick();
 	irq_restore(iflag);
 
-#if !CFG_IRQ_VECTS
-	irq_eoi(irq);
-#endif
 	// general timer
 	tmr_ticks++;
 
@@ -95,7 +92,14 @@ irq_handler(_tmr_tickf)
 	if (!ll_empty(&tmrs[cur])) {
 		mq_put(&tmr_mq, &cur, WAIT_NO);
 	}
+}
 
+irq_handler(_tmr_tickf)
+{
+	__tmr_tickf();
+#if !CFG_IRQ_VECTS
+	irq_eoi(irq);
+#endif
 	return IRQ_DONE;
 }
 
@@ -168,7 +172,7 @@ void tmr_tickless_end()
 	if (off > 1)
 		tmr_ticks += off - 1;
 	tmr_rtcs = 0;
-	irq_unmask(tmr_irq);
+	__tmr_tickf();
 }
 
 #endif

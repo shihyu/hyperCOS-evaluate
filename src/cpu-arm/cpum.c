@@ -30,8 +30,10 @@
 #include "io.h"
 #include "cpu-armm/asm.h"
 #include "cpu-armm/_cpu.h"
+#include "cpu-armm/_irq.h"
 #include "cpu-armm/reg.h"
 #include "cpu-armm/nvic.h"
+#include "../tmr_impl.h"
 #include <string.h>
 
 extern void __abt(void);
@@ -42,8 +44,6 @@ extern void _task_pendsv(void);
 
 extern unsigned _stack[];
 
-static task_t *cpu_fctx;
-
 int fctx_corrupted;
 
 unsigned cpu_pbits;
@@ -53,33 +53,64 @@ static inline void *stack_top(task_t * t)
 	return (((char *)t->stack) + t->stack_sz);
 }
 
-#if CFG_FIX_VECT
-void *__isr_vector[16 + CFG_FIX_VECT] __attribute__ ((aligned(128)));
+#if CFG_TICKLESS && !CFG_FIX_VECT
+#error "CFG_TICKLESS requires CFG_FIX_VECT"
 #endif
+
+#if CFG_FIX_VECT
+void *__isr_vector[E_INT + CFG_FIX_VECT];
+
+irq_sta_t __irq()
+{
+	irq_t _irq;
+	int n = irq_act();
+#if CFG_TICKLESS
+	if (tmr_rtcs)
+		tmr_tickless_end();
+#endif
+	_irq = (irq_t) __isr_vector[n];
+	if (_irq)
+		return _irq();
+	return IRQ_DONE;
+}
+#endif
+
+static irq_sta_t _halt()
+{
+	while (1) ;
+	return 0;
+}
+
+void **_vects;
 
 void cpu_init()
 {
-	void **_vects;
-#if CFG_FIX_VECT
-	int n = CFG_FIX_VECT;
-	int sz = (E_INT + n) * sizeof(void *);
-	_vects = __isr_vector;
-#else
+	void *msp;
+	int i;
 	int n = nvic_irqn();
 	int sz = (E_INT + n) * sizeof(void *);
-	_vects = (void **)core_alloc(sz, 7);
-#endif
-	// 128-bytes aligned
-	memset(_vects, sz, 0);
-	_vects[0] = _stack;
+	// aligned vect
+	_vects = (void **)core_alloc(sz, CFG_VECT_ALIGN);
+	// 16-bytes aligned msp
+	msp = (void **)core_alloc(CFG_STACK_IRQ, 4);
+	for (i = 1; i < E_INT; i++)
+		_vects[i] = _halt;
 	_vects[E_NMI] = __abt;
 	_vects[E_HARD] = _hfault;
 	_vects[E_MEM] = __abt;
 	_vects[E_BUS] = __abt;
 	_vects[E_SVC] = __abt;
 	_vects[E_PENDSV] = _task_pendsv;
-
+#if CFG_FIX_VECT
+	_vects[E_STICK] = __irq;
+	for (i = 0; i < n; i++)
+		_vects[E_INT + i] = __irq;
+	irqs = (irq_t *) (&__isr_vector[E_INT]);
+#else
 	irqs = (irq_t *) (&_vects[E_INT]);
+#endif
+	for (i = 0; i < n; i++)
+		irqs[i] = _halt;
 	reg(VTOR) = (unsigned)_vects;
 
 	// 4-bytes aligned exception stack
@@ -90,11 +121,10 @@ void cpu_init()
 	//SP_main = _stack &
 	//SP_process enable
 	asm volatile (""
-		      "mrs r1, MSP\n"
+		      "mov r1, sp\n"
 		      "msr MSP, %0\n"
 		      "mov r2, #2\n"
-		      "msr CONTROL, r2\n"
-		      "mov sp, r1\n" "mrs r2, PSP\n"::"r" (_vects[0])
+		      "msr CONTROL, r2\n" "mov sp, r1\n"::"r" (msp)
 		      :"r1", "r2");
 	cpu_fpu_on();
 	cpu_pri_reg(E_SVC) = 0xff;
@@ -124,7 +154,7 @@ reg_t *_cpu_task_init(task_t * t, void *priv, void *dest)
 ///< get float context soft frame
 static inline reg_f_t *_fctx_sf(task_t * t)
 {
-	return (reg_f_t *) (stack_top(t) - sizeof(reg_f_t) - sizeof(unsigned));
+	return (reg_f_t *) (stack_top(t) - sizeof(reg_f_t));
 }
 
 ///< get float context soft frame
@@ -132,6 +162,9 @@ static inline reg_fhard_t *_fctx_hf(task_t * t)
 {
 	return &(_fctx_sf(t)->h);
 }
+
+#if CFG_HFLOAT
+static task_t *cpu_fctx;
 
 int cpu_tf(reg_irq_t * ctx)
 {
@@ -208,6 +241,12 @@ int cpu_tf(reg_irq_t * ctx)
 	cpu_fctx = _task_cur;
 	return 1;
 }
+#else
+int cpu_tf(reg_irq_t * ctx)
+{
+	return 0;
+}
+#endif
 
 char *cpu_reg_names[] = {
 	"r4", "r5", "r6", "r7",

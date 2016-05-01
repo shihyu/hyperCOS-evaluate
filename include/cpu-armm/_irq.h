@@ -28,6 +28,7 @@
 #define IRQ_CPU150313
 
 #include "asm.h"
+#include "../cfg.h"
 
 #ifdef __ASSEMBLY__
 
@@ -75,6 +76,8 @@ inline static unsigned irq_unlock()
 	return flag;
 }
 
+#define irq_eoi(_n)
+
 typedef enum {
 	IRQ_NA = 0x1ff,
 	IRQ_DONE = 0x2ff
@@ -87,16 +90,6 @@ typedef irq_sta_t (*irq_t) (void);
 	irq_sta_t _name (void)
 
 #define irq_handler	irq_handler_decl
-/*
-#define irq_handler(_name)		\
-	irq_sta_t _##_name (void);	\
-	irq_sta_t _name(void){		\
-		unsigned en = cpu_fpu_sta();\
-		irq_sta_t r = _##_name();\
-		cpu_fpu_en(en);	\
-		return r;		\
-	}\
-	irq_sta_t _##_name(void)
-*/
-#endif
+
+#endif	//__ASSEMBLY__
 #endif
