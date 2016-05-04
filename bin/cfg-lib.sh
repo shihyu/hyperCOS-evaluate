@@ -19,33 +19,43 @@ function cfg_clang
 function cfg_v5t
 {
 	export COPTS="-march=armv5t -msoft-float"
-	echo "cfg_v5t COPTS=$COPTS"
+	echo "COPTS=$COPTS"
 }
 
 function cfg_v5tT
 {
 	export COPTS="-march=armv5t -mthumb -msoft-float"
-	echo "cfg_v5tT COPTS=$COPTS"
+	echo "COPTS=$COPTS"
 }
 
 function cfg_v7aT
 {
 	export COPTS="-march=armv7-a -mthumb -msoft-float"
-	echo "cfg_v7aT COPTS=$COPTS"
+	echo "COPTS=$COPTS"
+}
+
+function cfg_v7mTF_core
+{
+	export COPTS="-march=armv7-m -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fsingle-precision-constant -Wdouble-promotion"
+	echo "COPTS=$COPTS"
 }
 
 function cfg_v7mTF
 {
-	export COPTS="-march=armv7-m -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fsingle-precision-constant -Wdouble-promotion"
-	echo "cfg_v7mTF COPTS=$COPTS"
+	cfg_v7mTF_core
 	export CONFIG="-DCFG_STACK_IRQ=0x4096 -DCFG_TICKLESS=0 -DCFG_OSUTIL=0 -DCFG_CACHE_VMSA=0 -DCFG_IRQ_VECTS=1"
 	echo "CONFIG=\"-DCFG_STACK_IRQ=0x4096 -DCFG_TICKLESS=0 -DCFG_OSUTIL=0 -DCFG_CACHE_VMSA=0 -DCFG_IRQ_VECTS=1"
 }
 
-function cfg_v7mT
+function cfg_v7mT_core
 {
 	export COPTS="-march=armv7-m -mthumb -mfloat-abi=soft "
-	echo "cfg_v7mTF COPTS=$COPTS"
+	echo "COPTS=$COPTS"
+}
+
+function cfg_v7mT
+{
+	cfg_v7mT_core
 	export CONFIG="-DCFG_STACK_IRQ=0x4096 -DCFG_TICKLESS=1 -DCFG_OSUTIL=0 -DCFG_CACHE_VMSA=0 -DCFG_IRQ_VECTS=1 -DCFG_HFLOAT=0"
 	echo "CONFIG=\"-DCFG_STACK_IRQ=0x4096 -DCFG_TICKLESS=1 -DCFG_OSUTIL=0 -DCFG_CACHE_VMSA=0 -DCFG_IRQ_VECTS=1 -DCFG_HFLOAT=0"
 }
