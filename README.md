@@ -2,9 +2,10 @@
 
 ### Subscribe the mailing list [HERE](http://www.freelists.org/list/hypercos)
 
+### Visit our web [HERE](http://socware.net))
+
 #hyperC OS#
 
-## what is Markdown?
 ## This repository provide a strip version, request a complete version 
 http://socware.net/?page_id=300
 
