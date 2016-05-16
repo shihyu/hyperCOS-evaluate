@@ -4,7 +4,6 @@ v5obj:= $(armobj)	\
 	task-cpu.o	\
 	cpu.o		\
 	gic.o		\
-	dbm-arm.o	\
 	cache-vmsa.o	\
 	vector5.o	\
         sem-cpu-c.o	\
