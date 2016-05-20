@@ -44,8 +44,8 @@ struct reg;
 #define _test(_exp)      if(!(_exp)) _fail(cpu_cur_pc(),__FILE__,__LINE__)
 
 #if _DBG
-#include <stdio.h>
-#define dbg(_fmt, _args...) printf(_fmt , ##_args)
+int _printf(const char *fmt, ...);
+#define dbg(_fmt, _args...) _printf(_fmt , ##_args)
 #else
 #define dbg(_fmt, __args...)
 #endif
