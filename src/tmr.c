@@ -156,13 +156,16 @@ static int _tmr_next_expire()
 	return noff;
 }
 
-void tmr_tickless()
+int tmr_tickless()
 {
+	unsigned next_expire;
 	unsigned flag = irq_lock();
 	irq_mask(tmr_irq);
 	tmr_rtcs = soc_rtcs();
-	tmr_tickless_soc(_tmr_next_expire());
+	next_expire = _tmr_next_expire();
+	tmr_tickless_soc(next_expire);
 	irq_restore(flag);
+	return next_expire;
 }
 
 void tmr_tickless_end()

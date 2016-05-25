@@ -69,6 +69,8 @@ void tmr_tickless_soc(unsigned next_expire);
 
 void tmr_enable(int on);
 
+void soc_idle(int next_expire);
+
 void soc_init(void);
 
 unsigned dbm_irq(void);

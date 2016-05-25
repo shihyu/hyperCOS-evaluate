@@ -31,7 +31,7 @@ void tmr_init_sys(void);
 
 extern unsigned tmr_rtcs;
 
-void tmr_tickless();
+int tmr_tickless();
 
 void tmr_tickless_end();
 

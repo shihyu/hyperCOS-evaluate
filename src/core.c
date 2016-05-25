@@ -61,9 +61,10 @@ static void core_idle(void *priv)
 		}
 #endif
 #if CFG_TICKLESS
-		tmr_tickless();
-#endif
+		soc_idle(tmr_tickless());
+#else
 		cpu_idle();
+#endif
 	}
 }
 

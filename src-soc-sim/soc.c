@@ -32,6 +32,7 @@
 #include <hcos/cfg.h>
 #include <hcos/cpu/hyper.h>
 #include <hcos/cpu/gic.h>
+#include <hcos/cpu/_cpu.h>
 #include <hcos/dbm.h>
 #include "uart.h"
 #include "_soc.h"
@@ -39,6 +40,11 @@
 uart_t u0, u1;
 
 static int tmr_off;
+
+void soc_idle(int next_expire)
+{
+	cpu_idle();
+}
 
 void soc_init(void)
 {
