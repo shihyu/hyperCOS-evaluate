@@ -33,7 +33,6 @@
 #include <hcos/cpu/hyper.h>
 #include <hcos/cpu/gic.h>
 #include <hcos/cpu/_cpu.h>
-#include <hcos/dbm.h>
 #include "uart.h"
 #include "_soc.h"
 
