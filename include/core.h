@@ -45,7 +45,7 @@ void core_start(void);
 /// \param align_bits number of bits the required memory should align to
 void *core_alloc(unsigned sz, int align_bits);
 
-#define _alloc(_sz)      core_alloc(_sz, 2)
+#define _alloc(_sz)      core_alloc(_sz, 3)
 
 /// number of samples on busy
 extern unsigned core_nbusy;
