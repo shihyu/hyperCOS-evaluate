@@ -40,7 +40,7 @@ typedef struct {
 } tmr_t;
 
 /// total ticks since boot up
-extern unsigned tmr_ticks;
+extern unsigned tmr_ticks, tmr_hz;
 
 /// timer irq number
 extern unsigned tmr_irq;

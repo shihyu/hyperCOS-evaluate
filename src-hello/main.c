@@ -26,6 +26,7 @@
 #include <hcos/core.h>
 #include <hcos/task.h>
 #include <hcos/soc.h>
+#include <hcos/mod.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -41,11 +42,8 @@ unsigned ns_ints[] = {
 static void hellof(void *priv)
 {
 	unsigned ts = (unsigned)priv;
-	unsigned i = 0, b = soc_rtcs();
 	while (1) {
-		printf("Hello %6d %3d %2d %5d %6d\n",
-		       (soc_rtcs() - b), i++, ts,
-		       core_nbusy, (core_nidle + core_nbusy));
+		printf("%s %d\n", _task_cur->name, tmr_ticks);
 		task_sleep(ts);
 	}
 }
@@ -53,9 +51,8 @@ static void hellof(void *priv)
 int main(void)
 {
 	core_init();
-	core_ut_init();
-	task_new("hello-1", hellof, 56, 1024, -1, (void *)50);
-	task_new("hello-2", hellof, 10, 1024, -1, (void *)100);
+	task_new("hello-1", hellof, 56, 1024, -1, (void *)(tmr_hz / 2));
+	task_new("hello-2", hellof, 10, 1024, -1, (void *)(tmr_hz));
 	core_start();
 	return 0;
 }

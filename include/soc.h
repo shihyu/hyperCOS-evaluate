@@ -52,8 +52,9 @@ void irq_sgi(unsigned irq);
 /// initial a hardware timer to trigger interrupt periodically
 /// provided by SOC back-end and called by OS
 /// \param [output] log2(rtcs_freq/tick_freq)
+/// \param [output] hz
 /// \return timer irq
-int tmr_init_soc(unsigned *rtcs2tick);
+int tmr_init_soc(unsigned *rtcs2tick, unsigned *hz);
 
 /// initial the sampling irq
 /// provided by SOC back-end and called by OS

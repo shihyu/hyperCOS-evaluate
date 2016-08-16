@@ -43,6 +43,8 @@ ll_t tmrs[TMR_ENTS];
 
 unsigned tmr_ticks, tmr_irq, tmr_rtcs2tick;
 
+unsigned tmr_hz;
+
 task_t tmr_task;
 
 static mq_t tmr_mq;
@@ -190,6 +192,6 @@ void tmr_init_sys(void)
 		  "tmr",
 		  tmr_taskf,
 		  CFG_TMR_PRI, _alloc(CFG_TMR_STACK), CFG_TMR_STACK, -1, 0);
-	tmr_irq = tmr_init_soc(&tmr_rtcs2tick);
+	tmr_irq = tmr_init_soc(&tmr_rtcs2tick, &tmr_hz);
 	irq_init(tmr_irq, _tmr_tickf);
 }

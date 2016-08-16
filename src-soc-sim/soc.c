@@ -105,7 +105,7 @@ void tmr_enable(int on)
 	tmr_off = !on;
 }
 
-int tmr_init_soc(unsigned *rtcs2tick)
+int tmr_init_soc(unsigned *rtcs2tick, unsigned *hz)
 {
 	irq_cfg(IRQ_RTC, 0);
 	irq_cfg(IRQ_TIME, 0);
@@ -114,6 +114,7 @@ int tmr_init_soc(unsigned *rtcs2tick)
 	writel(0x2, (void *)BASE_TIME + 0x4);
 	writel(0x3, (void *)BASE_TIME + 0x8);
 	*rtcs2tick = 2;
+	*hz = 64;
 	return IRQ_TIME;
 }
 
