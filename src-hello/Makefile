@@ -37,14 +37,14 @@ include $(PREFIX)/share/Makefile.rule
 
 QF?=-serial stdio -serial null
 sim:
-	qemu-system-arm -display none -M gbb $(QF) -kernel $(QM) -gdb tcp::16888
+	qemu-system-arm -display none -M gbb $(QF) -kernel $(F) -gdb tcp::16888
 
 sim-dbg:
-	qemu-system-arm -display none -M gbb $(QF) -kernel $(QM) -S -gdb tcp::16888
+	qemu-system-arm -display none -M gbb $(QF) -kernel $(F) -S -gdb tcp::16888
 
 ddd:
-	ddd --debugger $(CROSS)gdb -x qemu.gdb $(QM)
+	ddd --debugger $(CROSS)gdb -x qemu.gdb $(F)
 
 gdb:
 	echo "target remote 127.0.0.1:8888" > dbm.gdb
-	$(CROSS)gdb -x dbm.gdb $(QM)
+	$(CROSS)gdb -x dbm.gdb $(F)
