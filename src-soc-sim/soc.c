@@ -129,14 +129,6 @@ void tmr_tickless_soc(unsigned next_expire)
 		writel(next_expire << 2, (void *)BASE_RTC + 0x0);
 }
 
-unsigned core_ut_init_soc()
-{
-	writel(0x1, (void *)BASE_TIME1 + 0x0);
-	writel(0x0, (void *)BASE_TIME1 + 0x4);
-	writel(0x3, (void *)BASE_TIME1 + 0x8);
-	return IRQ_TIME1;
-}
-
 int _dbm_get()
 {
 	return uart_get(&u1);

@@ -42,6 +42,44 @@ unsigned core_heap;
 
 static task_t core_task_idle;
 
+#if CFG_OSUTIL
+
+static unsigned idles[1<<CFG_OSUTIL], iidle;
+
+static unsigned ut_sta;
+
+static tmr_t ut_tmr;
+
+static int sample_ticks;
+
+core_ut_t core_ut = { idles, sizeof(idles) / sizeof(unsigned), 0, 0 };
+
+static int ut_tick(void *p)
+{
+	unsigned now, iflag;
+	iflag = irq_lock();
+	now = soc_rtcs();
+	core_ut.idles[iidle] = core_task_idle.ut;
+	core_task_idle.ut = 0;
+	core_ut.idle = (core_ut.idle >> 1) + core_ut.idles[iidle];
+	core_ut.all = (core_ut.all >> 1) + (now - ut_sta);
+	ut_sta = now;
+	irq_restore(iflag);
+	iidle = (iidle + 1) & ((1<<CFG_OSUTIL)-1);
+	core_ut.idles[iidle] = 0;
+	return sample_ticks;
+}
+
+void core_ut_init(int _sample_ticks)
+{
+	ut_sta = soc_rtcs();
+	sample_ticks = _sample_ticks;
+	tmr_init(&ut_tmr, 0, ut_tick);
+	tmr_on(&ut_tmr, _sample_ticks);
+}
+
+#endif
+
 ll_t core_gc_task;
 
 static void core_idle(void *priv)
@@ -98,26 +136,6 @@ void core_start()
 {
 	lle_del(&core_task_idle.ll);
 	_task_cur = &core_task_idle;
+	_task_cur->sch = soc_rtcs();
 	task_load(&core_task_idle);
 }
-
-#if CFG_OSUTIL
-
-unsigned core_nbusy, core_nidle;
-
-static irq_sta_t _core_utick(unsigned irq, void *reg_irq, int depth)
-{
-	if (_task_cur == &core_task_idle)
-		core_nidle++;
-	else
-		core_nbusy++;
-	return 0;
-}
-
-void core_ut_init()
-{
-	unsigned irq = core_ut_init_soc();
-	irq_init(irq, _core_utick);
-}
-
-#endif

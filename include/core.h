@@ -47,21 +47,14 @@ void *core_alloc(unsigned sz, int align_bits);
 
 #define _alloc(_sz)      core_alloc(_sz, 3)
 
-/// number of samples on busy
-extern unsigned core_nbusy;
+typedef struct {
+	unsigned *idles, idle_sz;
+	unsigned idle, all;
+} core_ut_t;
 
-/// number of samples on idle
-extern unsigned core_nidle;
+void core_ut_init(int sample_ticks);
 
-static inline void core_ut_rst()
-{
-	unsigned flag = irq_lock();
-	core_nbusy = core_nidle = 0;
-	irq_restore(flag);
-}
-
-/// start the utilization sampling
-void core_ut_init();
+extern core_ut_t core_ut;
 
 extern void (*core_abt) (void *ctx);
 

@@ -178,7 +178,7 @@
 
 /// support OS utilization statistics
 #ifndef CFG_OSUTIL
-#define CFG_OSUTIL	1
+#define CFG_OSUTIL	3
 #endif
 
 /// support stack overflow detection

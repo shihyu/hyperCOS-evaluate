@@ -29,6 +29,7 @@
 #include "wait.h"
 #include "sch.h"
 #include "dbg.h"
+#include "soc.h"
 #include "cpu/_cpu.h"
 #include <string.h>
 
@@ -184,10 +185,16 @@ void task_pri(task_t * t, short pri)
 
 reg_t **_task_switch_status(task_t * tn)
 {
+	unsigned now;
 	task_t *t = _task_cur;
 	if (_task_cur->status == TASK_READY)
 		sch_add(_task_cur);
 	sch_del(tn);
+
+	now = soc_rtcs();
+	_task_cur->ut += now - _task_cur->sch;
+	tn->sch = now;
+
 	_task_cur = tn;
 	_task_cur->slice_cur = _task_cur->slice;
 	return &t->context;

@@ -59,6 +59,8 @@ typedef struct task {
 	char status;		///< task_status_t
 	char tm_out;
 	short pri;		///< initial thread priority
+	unsigned sch;
+	unsigned ut;
 } task_t;
 
 extern void (*task_gc) (task_t * t);

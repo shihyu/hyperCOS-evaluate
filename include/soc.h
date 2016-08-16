@@ -56,11 +56,6 @@ void irq_sgi(unsigned irq);
 /// \return timer irq
 int tmr_init_soc(unsigned *rtcs2tick, unsigned *hz);
 
-/// initial the sampling irq
-/// provided by SOC back-end and called by OS
-/// \return sampling irq
-unsigned core_ut_init_soc();
-
 /// \return get the Real Time Counter value
 unsigned soc_rtcs();
 
