@@ -26,7 +26,6 @@
 #include <hcos/core.h>
 #include <hcos/task.h>
 #include <hcos/soc.h>
-#include <hcos/mod.h>
 #include <string.h>
 #include <stdio.h>
 
